@@ -9,8 +9,13 @@ public class StudentRecord {
         this.id = id; this.name = name; this.email = email; this.phone = phone; this.program = program;
     }
 
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         return "StudentRecord{id='" + id + "', name='" + name + "', email='" + email + "', phone='" + phone + "', program='" + program + "'}";
     }
+
 }
