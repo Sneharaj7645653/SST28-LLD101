@@ -17,8 +17,8 @@ public class OnboardingService {
         reporter.printInput(raw);
 
         Map<String,String> kv = parser.parse(raw);
-        validator.validate(kv);
-
+        List<String> errors = validator.validate(kv);
+        if (errors != null) return;
 
         String name = kv.getOrDefault("name", "");
         String email = kv.getOrDefault("email", "");

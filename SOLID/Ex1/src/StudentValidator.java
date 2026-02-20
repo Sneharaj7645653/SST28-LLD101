@@ -3,7 +3,11 @@ import java.util.List;
 import java.util.Map;
 
 public class StudentValidator {
-    public void validate(Map<String,String> kv) {
+    ProgramList programList;
+    StudentValidator(ProgramList programList) {
+        this.programList = programList;
+    }
+    public List<String> validate(Map<String,String> kv) {
 
         String name = kv.getOrDefault("name", "");
         String email = kv.getOrDefault("email", "");
@@ -14,12 +18,14 @@ public class StudentValidator {
         if (name.isBlank()) errors.add("name is required");
         if (email.isBlank() || !email.contains("@")) errors.add("email is invalid");
         if (phone.isBlank() || !phone.chars().allMatch(Character::isDigit)) errors.add("phone is invalid");
-        if (!(program.equals("CSE") || program.equals("AI") || program.equals("SWE"))) errors.add("program is invalid");
+        if (!programList.validProgram(program)) errors.add("program is invalid");
 
         if (!errors.isEmpty()) {
             System.out.println("ERROR: cannot register");
             for (String e : errors) System.out.println("- " + e);
-            return;
+            return errors;
         }
+
+        return null;
     }
 }
