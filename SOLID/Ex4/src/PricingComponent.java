@@ -1,0 +1,3 @@
+interface PricingComponent {
+    Money price();
+}
