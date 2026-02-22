@@ -1,45 +1,35 @@
 import java.util.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class EligibilityEngine {
+
+    private final List<EligibilityRule> rules;
     private final FakeEligibilityStore store;
 
-    public EligibilityEngine(FakeEligibilityStore store) { this.store = store; }
-
-    public void runAndPrint(StudentProfile s) {
-        ReportPrinter p = new ReportPrinter();
-        EligibilityEngineResult r = evaluate(s); // giant conditional inside
-        p.print(s, r);
-        store.save(s.rollNo, r.status);
+    public EligibilityEngine(List<EligibilityRule> rules,
+                             FakeEligibilityStore store) {
+        this.rules = rules;
+        this.store = store;
     }
 
-    public EligibilityEngineResult evaluate(StudentProfile s) {
-        List<String> reasons = new ArrayList<>();
-        String status = "ELIGIBLE";
+    public EvaluationResult evaluate(StudentProfile student) {
 
-        // OCP violation: long chain for each rule
-        if (s.disciplinaryFlag != LegacyFlags.NONE) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("disciplinary flag present");
-        } else if (s.cgr < 8.0) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("CGR below 8.0");
-        } else if (s.attendancePct < 75) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("attendance below 75");
-        } else if (s.earnedCredits < 20) {
-            status = "NOT_ELIGIBLE";
-            reasons.add("credits below 20");
+        List<String> reasons = new ArrayList<>();
+
+        for (EligibilityRule rule : rules) {
+            String result = rule.validate(student);
+            if (result != null) {
+                reasons.add(result);
+            }
         }
 
-        return new EligibilityEngineResult(status, reasons);
+        boolean eligible = reasons.isEmpty();
+
+        store.save(student.getRollNo());
+
+        return new EvaluationResult(eligible, reasons);
     }
 }
 
-class EligibilityEngineResult {
-    public final String status;
-    public final List<String> reasons;
-    public EligibilityEngineResult(String status, List<String> reasons) {
-        this.status = status;
-        this.reasons = reasons;
-    }
-}
