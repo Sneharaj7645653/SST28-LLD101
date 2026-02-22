@@ -8,14 +8,23 @@ public class Main {
         NotificationSender email = new EmailSender(audit);
         NotificationSender sms = new SmsSender(audit);
         NotificationSender wa = new WhatsAppSender(audit);
+        NotificationSender pa = new WhatsAppSender(audit);
 
         email.send(n);
         sms.send(n);
+
         try {
             wa.send(n);
         } catch (RuntimeException ex) {
             System.out.println("WA ERROR: " + ex.getMessage());
             audit.add("WA failed");
+        }
+
+        try {
+            pa.send(n);
+        } catch (RuntimeException ex) {
+            System.out.println("PA ERROR: " + ex.getMessage());
+            audit.add("PA failed");
         }
 
         System.out.println("AUDIT entries=" + audit.size());
