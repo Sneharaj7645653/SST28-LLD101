@@ -1,4 +1,8 @@
-package PACKAGE_NAME;
+public class PublicityLeadTool extends EventLeadTool implements PublicityLead {
+    public PublicityLeadTool(EventPlanner events) {
+        super(events);
+    }
 
-public class PublicityLeadTool {
+    @Override public void createEvent(String name, double budget) { super.createEvent(name, budget); }
+    @Override public int getEventsCount() { return super.getEventsCount(); }
 }

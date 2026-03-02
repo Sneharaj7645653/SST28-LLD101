@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
-public class EventLead {
+public interface EventLead {
+    void createEvent(String name, double budget);
+    int getEventsCount();
 }

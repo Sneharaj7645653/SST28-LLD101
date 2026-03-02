@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public class FareCalcultor {
+public interface FareCalculator {
+    double calculateFare(double km);
 }

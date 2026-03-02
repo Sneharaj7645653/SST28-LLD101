@@ -1,4 +1,4 @@
-package PACKAGE_NAME;
-
-public class PublicityLead {
+public interface PublicityLead {
+    void createEvent(String name, double budget);
+    int getEventsCount();
 }

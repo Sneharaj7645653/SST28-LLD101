@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public class AttendanceControl {
+public interface AttendanceControl extends SmartClassroomDevice {
+    int scanAttendance();
 }

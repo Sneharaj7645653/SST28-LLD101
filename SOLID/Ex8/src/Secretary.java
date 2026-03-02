@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public class Secretary {
+public interface Secretary {
+    void addMinutes(String text);
 }

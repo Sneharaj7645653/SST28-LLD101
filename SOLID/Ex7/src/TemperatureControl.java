@@ -1,4 +1,3 @@
-package PACKAGE_NAME;
-
-public class TemperatureControl {
+public interface TemperatureControl extends SmartClassroomDevice {
+    void setTemperatureC(int c);
 }
