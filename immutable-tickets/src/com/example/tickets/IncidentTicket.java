@@ -199,3 +199,23 @@ public class IncidentTicket {
 //No Side Effects: In the older version, escalateToCritical and assign were void—they changed the object behind the scenes. Now, they return a new instance of IncidentTicket.
 //
 //Clean Logic: The service no longer needs to perform manual null checks or regex validation; it trusts the Builder to throw an exception if the data is bad.
+
+
+
+
+
+/**
+ * IncidentTicket (The Data Model)
+ * Previously: It was a "POJO" (Plain Old Java Object) with a massive leak. It had multiple overlapping constructors and public setters. You could change the id or title at any time after the ticket was created, which is dangerous for audit logs or database consistency.
+ *
+ * Now: It is an Immutable Record. By making fields final and removing setters, the object is now thread-safe and "read-only." It also gained a Builder—a dedicated "factory" that handles the complexity of creating a ticket with many optional fields without needing 10 different constructors.
+ *
+ * TicketService (The Business Logic)
+ * Previously: It acted like a "mechanic" constantly modifying a car while it was driving. It would create a blank ticket and then call .setPriority() or .setSource() multiple times. If an error happened halfway through, you’d be left with a "half-baked," invalid ticket object.
+ *
+ * Now: It acts like a Functional Coordinator. Instead of changing an existing ticket, it uses the Builder to produce a brand-new version. Methods like escalateToCritical now return a new ticket instance. This ensures that the original state is preserved (great for "undo" features or history tracking).
+ *
+ * Validation (The Guard)
+ * Previously: It existed but was barely used. The TicketService was doing its own manual, "scattered" validation (like checking for @ symbols), which meant you had to remember to write validation code every time you created a ticket.
+ *
+ * Now: It is the Single Source of Truth. The Builder calls these validation methods inside the .build() step. This means the rest of your app can "trust" an IncidentTicket object; if the object exists, you know for a fact it passed all the regex and range checks.*/
