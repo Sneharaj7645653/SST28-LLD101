@@ -160,3 +160,42 @@ public class IncidentTicket {
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+//1. IncidentTicket Class (The Fortress)
+//You transformed this from a simple POJO into a truly immutable record.
+//
+//        Immutability: You marked all fields as final. Once a ticket is built, it can never be changed.
+//
+//Enforced Encapsulation: You removed all public constructors and all set methods. The only way to get a ticket is through the Builder.
+//
+//Defensive Copying: In getTags(), you now return new ArrayList<>(tags). In the older version, you leaked the internal list, allowing anyone to call .clear() or .add() on a "read-only" object.
+//
+//Type Safety: You switched the internal priority field from a String to the TicketPriorityEnum.
+//
+//        2. The Builder Pattern (The Gatekeeper)
+//You added a static nested Builder class to handle the complex construction logic.
+//
+//Fluent API: Methods like .id().reporterEmail().build() allow for readable, flexible object creation.
+//
+//Centralized Validation: This is the biggest win. You moved validation logic out of the Service and into the build() method. Now, it is impossible to create an IncidentTicket that violates your business rules.
+//
+//The from() Method: Since the ticket is immutable, you can't "edit" it. You added a from(IncidentTicket t) method that clones an existing ticket into a new builder, allowing for "mutations" by creating a fresh copy.
+//
+//        3. TicketService (The Coordinator)
+//You refactored the service to respect immutability.
+//
+//No Side Effects: In the older version, escalateToCritical and assign were void—they changed the object behind the scenes. Now, they return a new instance of IncidentTicket.
+//
+//Clean Logic: The service no longer needs to perform manual null checks or regex validation; it trusts the Builder to throw an exception if the data is bad.
