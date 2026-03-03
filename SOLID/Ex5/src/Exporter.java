@@ -25,16 +25,36 @@ public abstract class Exporter {
 
 
 /**
- We solved the Liskov Substitution Principle (LSP) violation by implementing the
- Template Method Pattern, which moves the "rules of the game" from the subclasses
- into a single, authoritative base class. Instead of allowing subclasses
- like PushNotificationSender to throw unexpected exceptions when data is
- missing—which forced the Main method to use messy try-catch blocks—we introduced a
- validation hook (canSend). Now, the base class controls the workflow: it asks the
- subclass if the notification is valid, and if not, it handles the "skip" gracefully
- and logs the event to the AuditLog. This ensures that every NotificationSender behaves
- predictably, allowing the caller to treat all senders identically without worrying about
- hidden requirements or runtime crashes.
+ In the old flow, the system operated on "blind trust": the Main method treated
+ all senders as simple actions (void), but the WhatsAppSender hiddenly enforced
+ a strict rule that would crash the entire program with an exception if a phone
+ number was invalid. This forced the caller to use a messy try-catch block to
+ "guard" against that specific subclass, proving that the senders weren't truly
+ interchangeable.
+
+ In the new flow, we replaced that "crash" with a "report."
+ We changed the base contract to return a SendResult object, which
+ acts like a standardized envelope. Now, when WhatsAppSender encounters a
+ bad phone number, it doesn't explode; it simply places a "Failure" note inside
+ that envelope and returns it politely to the Main method. Because every sender
+ now hands back the same type of envelope, the Main method can treat them all
+ exactly the same in a single loop—checking the success flag to decide whether
+ to print a confirmation or an error message—making the system predictable,
+ safe, and truly LSP-compliant.
+
+
+
+ The Flow:
+
+ Main loops through List<NotificationSender>.
+
+ Main calls sender.send(n).
+
+ The child class performs its specific logic (truncating, validating, or printing).
+
+ The child class hands back a SendResult.
+
+ Main reads the success flag. If it's false, it prints the error.
  *
  * */
 
